@@ -4,6 +4,8 @@
  */
 package capapresentacion;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author quesi
@@ -19,12 +21,42 @@ public class JFraMDI extends javax.swing.JFrame {
         initComponents();
         setExtendedState(JFraMDI.MAXIMIZED_BOTH);
     }
+    
+    public boolean validarInicioSesion(){
+        boolean estado;
+        
+        if (!this.jTFNombreUsuario.getText().equals("") && !this.jPFContraseña.getPassword().equals("")){
+            estado = true;
+            
+            this.jMenu2.setEnabled(true);
+            this.jMenu3.setEnabled(true);
+            this.jMenu4.setEnabled(true);
+            
+        } else {
+            estado = false;
+            JOptionPane.showMessageDialog(this, "Debe ingresar el nombre de usuario y la contraseña", 
+                    "Envoice System", JOptionPane.WARNING_MESSAGE);
+        }
+        return estado;
+        
+        
+
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jDPPrincipal = new javax.swing.JDesktopPane();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jTFNombreUsuario = new javax.swing.JTextField();
+        jPFContraseña = new javax.swing.JPasswordField();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jTFIdUsuario = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMISalir = new javax.swing.JMenuItem();
@@ -41,15 +73,86 @@ public class JFraMDI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel1.setText("Iniciar Sesion / Registrarse");
+
+        jLabel2.setText("Nombre de Usuario");
+
+        jLabel3.setText("Contraseña");
+
+        jLabel4.setText("idUsuario");
+
+        jTFIdUsuario.setEnabled(false);
+
+        jButton1.setText("Ingresar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(145, 145, 145)
+                        .addComponent(jLabel1))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(34, 34, 34)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel2)
+                            .addComponent(jTFNombreUsuario)
+                            .addComponent(jLabel3)
+                            .addComponent(jPFContraseña)
+                            .addComponent(jLabel4)
+                            .addComponent(jTFIdUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(171, 171, 171)
+                        .addComponent(jButton1)))
+                .addContainerGap(79, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addComponent(jLabel1)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTFNombreUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPFContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTFIdUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jButton1)
+                .addContainerGap(36, Short.MAX_VALUE))
+        );
+
+        jDPPrincipal.setLayer(jPanel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
         javax.swing.GroupLayout jDPPrincipalLayout = new javax.swing.GroupLayout(jDPPrincipal);
         jDPPrincipal.setLayout(jDPPrincipalLayout);
         jDPPrincipalLayout.setHorizontalGroup(
             jDPPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 514, Short.MAX_VALUE)
+            .addGroup(jDPPrincipalLayout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(16, 16, 16))
         );
         jDPPrincipalLayout.setVerticalGroup(
             jDPPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 377, Short.MAX_VALUE)
+            .addGroup(jDPPrincipalLayout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(45, Short.MAX_VALUE))
         );
 
         jMenu1.setText("Archivo");
@@ -60,6 +163,7 @@ public class JFraMDI extends javax.swing.JFrame {
         jMenuBar1.add(jMenu1);
 
         jMenu2.setText("Transacciones");
+        jMenu2.setEnabled(false);
 
         jMIFacturacion.setText("Facturacion");
         jMenu2.add(jMIFacturacion);
@@ -67,6 +171,7 @@ public class JFraMDI extends javax.swing.JFrame {
         jMenuBar1.add(jMenu2);
 
         jMenu3.setText("Mantenimiento");
+        jMenu3.setEnabled(false);
 
         jMICiudad.setText("Ciudad");
         jMICiudad.addActionListener(new java.awt.event.ActionListener() {
@@ -111,6 +216,7 @@ public class JFraMDI extends javax.swing.JFrame {
         jMenuBar1.add(jMenu3);
 
         jMenu4.setText("Usuario");
+        jMenu4.setEnabled(false);
 
         jMIUsuario.setText("Gestion usuario");
         jMenu4.add(jMIUsuario);
@@ -163,6 +269,10 @@ public class JFraMDI extends javax.swing.JFrame {
         cliente.show();
     }//GEN-LAST:event_jMIClienteActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        validarInicioSesion();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -189,7 +299,12 @@ public class JFraMDI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JDesktopPane jDPPrincipal;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JMenuItem jMICiudad;
     private javax.swing.JMenuItem jMICliente;
     private javax.swing.JMenuItem jMIFacturacion;
@@ -203,5 +318,9 @@ public class JFraMDI extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JPasswordField jPFContraseña;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JTextField jTFIdUsuario;
+    private javax.swing.JTextField jTFNombreUsuario;
     // End of variables declaration//GEN-END:variables
 }
