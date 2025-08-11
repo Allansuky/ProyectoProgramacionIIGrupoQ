@@ -198,7 +198,7 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
                         .addComponent(jBtnLimpiar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jBtnMostrar)))
-                .addContainerGap(38, Short.MAX_VALUE))
+                .addContainerGap(208, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -212,15 +212,23 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
                     .addComponent(jBtnGuardar)
                     .addComponent(jBtnLimpiar)
                     .addComponent(jBtnMostrar))
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addContainerGap(248, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jBtnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnLimpiarActionPerformed
-        limpiarTabla();
-    }//GEN-LAST:event_jBtnLimpiarActionPerformed
+    private void jBtnMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnMostrarActionPerformed
+        mostrarArchivo();
+    }//GEN-LAST:event_jBtnMostrarActionPerformed
+
+    private void jBtnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnGuardarActionPerformed
+        guardarArchivo();
+    }//GEN-LAST:event_jBtnGuardarActionPerformed
+
+    private void jBtnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnAgregarActionPerformed
+        dtm.addRow(new Object[]{"","",""});
+    }//GEN-LAST:event_jBtnAgregarActionPerformed
 
     private void jBtnCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnCrearActionPerformed
         try {
@@ -230,17 +238,9 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jBtnCrearActionPerformed
 
-    private void jBtnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnAgregarActionPerformed
-        dtm.addRow(new Object[]{"","",""});
-    }//GEN-LAST:event_jBtnAgregarActionPerformed
-
-    private void jBtnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnGuardarActionPerformed
-        guardarArchivo();
-    }//GEN-LAST:event_jBtnGuardarActionPerformed
-
-    private void jBtnMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnMostrarActionPerformed
-        mostrarArchivo();
-    }//GEN-LAST:event_jBtnMostrarActionPerformed
+    private void jBtnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnLimpiarActionPerformed
+        limpiarTabla();
+    }//GEN-LAST:event_jBtnLimpiarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

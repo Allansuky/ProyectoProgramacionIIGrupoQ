@@ -43,7 +43,7 @@ public class JFraCiudad extends javax.swing.JInternalFrame {
         miLista.stream().map((CLCiudad cl) -> {
             Object[] fila = new Object[2];
             fila[0] = cl.getIdCiudad();
-            fila[0] = cl.getNombreCiudad();
+            fila[1] = cl.getNombreCiudad();
             return fila;
         }).forEachOrdered(temp::addRow);
     }
