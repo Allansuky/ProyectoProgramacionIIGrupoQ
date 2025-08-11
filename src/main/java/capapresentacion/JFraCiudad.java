@@ -4,91 +4,77 @@
  */
 package capapresentacion;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Scanner;
+import capadatos.Conexion;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author quesi
- */
 public class JFraCiudad extends javax.swing.JInternalFrame {
-    
+
     DefaultTableModel dtm;
-    /**
-     * Creates new form JIFraCiudad
-     */
+
     public JFraCiudad() {
         initComponents();
-        dtm = (DefaultTableModel) this.jTblDatosCiudad.getModel(); 
+        dtm = (DefaultTableModel) this.jTblDatosCiudad.getModel();
     }
-    
+
+    // Habilitar botones
     private void habilitarBotones() {
         this.jBtnAgregar.setEnabled(true);
         this.jBtnGuardar.setEnabled(true);
         this.jBtnMostrar.setEnabled(true);
         this.jBtnLimpiar.setEnabled(true);
     }
-    
-    private void crearArchivos() throws IOException {
-        
-        File archivo = new File ("ArchivoCiudad.txt");
-        
-        if (archivo.exists()){
-            habilitarBotones();
-        } else {
-            JOptionPane.showMessageDialog(null,"No se encuentra el archivo, proceda a crear el archivos }",
-                    "Gestion Archivos", 1 );
-            archivo.createNewFile();
-            habilitarBotones();
+
+    // Guardar datos en la BD usando usp_insertarCiudad
+    private void guardarBD() {
+    try (Connection conn = Conexion.conectar()) {
+        for (int i = 0; i < dtm.getRowCount(); i++) {
+            Object nombreCiudad = dtm.getValueAt(i, 1);
+            // Solo guarda filas con nombre válido y sin ID (asumiendo que filas con ID ya están en BD)
+            Object idCiudad = dtm.getValueAt(i, 0);
+
+            if ((idCiudad == null || idCiudad.toString().isEmpty()) 
+                && nombreCiudad != null && !nombreCiudad.toString().trim().isEmpty()) {
+
+                CallableStatement stmt = conn.prepareCall("{CALL usp_insertarCiudad(?)}");
+                stmt.setString(1, nombreCiudad.toString().trim());
+                stmt.execute();
+            }
         }
+        JOptionPane.showMessageDialog(this, "Datos almacenados en la base de datos");
+        mostrarBD();  // refresca la tabla para mostrar IDs nuevos
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(this, "Error al guardar en BD: " + ex.getMessage());
     }
-    
-    private void guardarArchivo() {
-        
-        try {
-           FileWriter salvarArchivo = new FileWriter("archivoCiudad.txt");
-           for (int i = 0; i < this.jTblDatosCiudad.getRowCount(); i++) {
-               salvarArchivo.write(dtm.getValueAt(i,0).toString()+ "\n");
-               salvarArchivo.write(dtm.getValueAt(i,1).toString()+ "\n");
-           }
-           salvarArchivo.close();
-           JOptionPane.showMessageDialog(null,"Datos almacenados satisfactoriamente",
-                    "Gestion Archivos", 1 );
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null, "Error" + ex);
-        }
-    }
-    
-    private void mostrarArchivo() {
-        String id, nombre;
-        
-        String au = "archivoCiudad.txt";
-        
-        File arcLectura = new File(au);
-        
-        try {
-            Scanner lecturaArchivo = new Scanner(arcLectura);
-            
-            while(lecturaArchivo.hasNextLine()) {
-                id = lecturaArchivo.nextLine();
-                nombre = lecturaArchivo.nextLine();
-                
+}
+
+    // Mostrar datos desde la BD usando mostrarCiudades
+    private void mostrarBD() {
+        limpiarTabla();
+
+        try (Connection conn = Conexion.conectar()) {
+            CallableStatement stmt = conn.prepareCall("{CALL mostrarCiudades()}");
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("id_ciudad");       // Cambia por el nombre exacto de la columna en tu BD
+                String nombre = rs.getString("nombre_ciudad");
                 dtm.addRow(new Object[]{id, nombre});
             }
-        } catch(FileNotFoundException e) {
-            JOptionPane.showMessageDialog(null, "Error" + e);
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error al mostrar datos: " + ex.getMessage());
         }
     }
-    
+
+    // Limpiar tabla
     private void limpiarTabla() {
-        
         int fila = this.jTblDatosCiudad.getRowCount();
-        for (int i = fila - 1; i>= 0; i--) {
+        for (int i = fila - 1; i >= 0; i--) {
             dtm.removeRow(i);
         }
     }
@@ -105,7 +91,6 @@ public class JFraCiudad extends javax.swing.JInternalFrame {
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTblDatosCiudad = new javax.swing.JTable();
-        jBtnCrear = new javax.swing.JButton();
         jBtnMostrar = new javax.swing.JButton();
         jBtnLimpiar = new javax.swing.JButton();
         jBtnAgregar = new javax.swing.JButton();
@@ -141,13 +126,6 @@ public class JFraCiudad extends javax.swing.JInternalFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18))
         );
-
-        jBtnCrear.setText("Crear");
-        jBtnCrear.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBtnCrearActionPerformed(evt);
-            }
-        });
 
         jBtnMostrar.setText("Mostrar");
         jBtnMostrar.addActionListener(new java.awt.event.ActionListener() {
@@ -187,9 +165,7 @@ public class JFraCiudad extends javax.swing.JInternalFrame {
                         .addGap(26, 26, 26)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(78, 78, 78)
-                        .addComponent(jBtnCrear)
-                        .addGap(8, 8, 8)
+                        .addGap(158, 158, 158)
                         .addComponent(jBtnAgregar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jBtnGuardar)
@@ -206,7 +182,6 @@ public class JFraCiudad extends javax.swing.JInternalFrame {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jBtnCrear)
                     .addComponent(jBtnLimpiar)
                     .addComponent(jBtnAgregar)
                     .addComponent(jBtnGuardar)
@@ -217,24 +192,16 @@ public class JFraCiudad extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jBtnCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnCrearActionPerformed
-        try {
-            crearArchivos();
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null,"Error" +  ex);
-        }
-    }//GEN-LAST:event_jBtnCrearActionPerformed
-
     private void jBtnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnAgregarActionPerformed
-        dtm.addRow(new Object[]{"",""});
+       dtm.addRow(new Object[]{null, ""}); // null para Id, vacío para Nombre Ciudad
     }//GEN-LAST:event_jBtnAgregarActionPerformed
 
     private void jBtnMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnMostrarActionPerformed
-        mostrarArchivo();
+        mostrarBD();
     }//GEN-LAST:event_jBtnMostrarActionPerformed
 
     private void jBtnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnGuardarActionPerformed
-        guardarArchivo();
+        guardarBD();
     }//GEN-LAST:event_jBtnGuardarActionPerformed
 
     private void jBtnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnLimpiarActionPerformed
@@ -244,7 +211,6 @@ public class JFraCiudad extends javax.swing.JInternalFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jBtnAgregar;
-    private javax.swing.JButton jBtnCrear;
     private javax.swing.JButton jBtnGuardar;
     private javax.swing.JButton jBtnLimpiar;
     private javax.swing.JButton jBtnMostrar;
