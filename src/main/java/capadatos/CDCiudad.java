@@ -31,7 +31,7 @@ public class CDCiudad {
     
     // Metodo para insertar tabla ciudad.
     public void insertarCiudad(CLCiudad cl) throws SQLException {
-        String sql = "{CALL sp_insertarCiudad(?)}";
+        String sql = "{CALL usp_insertarCiudad(?)}";
         
         try {
             ps = cn.prepareCall(sql);
@@ -44,7 +44,7 @@ public class CDCiudad {
     
     // Metodo Actualizar Ciudad.
     public void actualizarCiudad(CLCiudad cl) throws SQLException {
-        String sql = "{CALL sp_actualizarCiudad(?,?)}";
+        String sql = "{CALL usp_actualizarCiudad(?,?)}";
         
         try {
             ps = cn.prepareCall(sql);
@@ -58,7 +58,7 @@ public class CDCiudad {
     
     // Metodo para eliminar ciudad de la tabla.
     public void eliminarCiudad(CLCiudad cl) throws SQLException {
-        String sql = "{CALL sp_eliminarCiudad(?,?)}";
+        String sql = "{CALL usp_eliminarCiudad(?,?)}";
         
         try {
             ps = cn.prepareCall(sql);
@@ -74,7 +74,7 @@ public class CDCiudad {
         
         int idCiudad = 0;
         
-        String sql = "{CALL sp_autoIncrementarCiudadID()}";
+        String sql = "{CALL usp_autoIncrementarCiudadID()}";
         
         try {
             st = cn.createStatement();
@@ -94,7 +94,7 @@ public class CDCiudad {
     
     // Metodo para poblar de datos la tabla.
     public List<CLCiudad> obtenerListaCiudades() throws SQLException {
-        String sql = "{CALL sp_mostrarCiudades()}";
+        String sql = "{CALL usp_mostrarCiudades()}";
         
         List<CLCiudad> miLista = null;
         
