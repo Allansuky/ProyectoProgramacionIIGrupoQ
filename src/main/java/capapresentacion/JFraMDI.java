@@ -59,7 +59,7 @@ public class JFraMDI extends javax.swing.JFrame {
         jMenu3 = new javax.swing.JMenu();
         jMICiudad = new javax.swing.JMenuItem();
         jMIProveedor = new javax.swing.JMenuItem();
-        jMIProducto = new javax.swing.JMenuItem();
+        jMIVehiculo = new javax.swing.JMenuItem();
         jMICliente = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMIUsuario = new javax.swing.JMenuItem();
@@ -122,13 +122,13 @@ public class JFraMDI extends javax.swing.JFrame {
         });
         jMenu3.add(jMIProveedor);
 
-        jMIProducto.setText("Vehiculo");
-        jMIProducto.addActionListener(new java.awt.event.ActionListener() {
+        jMIVehiculo.setText("Vehiculo");
+        jMIVehiculo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMIProductoActionPerformed(evt);
+                jMIVehiculoActionPerformed(evt);
             }
         });
-        jMenu3.add(jMIProducto);
+        jMenu3.add(jMIVehiculo);
 
         jMICliente.setText("Cliente");
         jMICliente.addActionListener(new java.awt.event.ActionListener() {
@@ -185,11 +185,11 @@ public class JFraMDI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMIProveedorActionPerformed
 
-    private void jMIProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMIProductoActionPerformed
-        JFraProducto producto = new JFraProducto();
+    private void jMIVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMIVehiculoActionPerformed
+        JFraVehiculo producto = new JFraVehiculo();
         jDPPrincipal.add(producto);
         producto.show();
-    }//GEN-LAST:event_jMIProductoActionPerformed
+    }//GEN-LAST:event_jMIVehiculoActionPerformed
 
     private void jMIClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMIClienteActionPerformed
         try {
@@ -232,10 +232,10 @@ public class JFraMDI extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMICiudad;
     private javax.swing.JMenuItem jMICliente;
     private javax.swing.JMenuItem jMIFacturacion;
-    private javax.swing.JMenuItem jMIProducto;
     private javax.swing.JMenuItem jMIProveedor;
     private javax.swing.JMenuItem jMISalir;
     private javax.swing.JMenuItem jMIUsuario;
+    private javax.swing.JMenuItem jMIVehiculo;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
