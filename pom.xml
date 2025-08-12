@@ -10,4 +10,14 @@
         <maven.compiler.release>24</maven.compiler.release>
         <exec.mainClass>com.curlp.mdiprincipal.Mdiprincipal</exec.mainClass>
     </properties>
+    
+    <dependencies>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.33</version>
+        </dependency>
+    </dependencies>
+    
+    
 </project>

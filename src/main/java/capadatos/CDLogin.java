@@ -20,7 +20,7 @@ public class CDLogin {
     
     public String iniciarSesion(CLLogin ll) throws SQLException{
         
-        String sql = "{Call sp_validarUsuario(?,?)}";
+        String sql = "{Call usp_validarUsuario(?,?)}";
         
         int userID = 0;
         String userName = null;
@@ -32,8 +32,8 @@ public class CDLogin {
             ResultSet rs = ps.executeQuery();
             
             if(rs.next()){
-                userID = rs.getInt("userID");
-                userName = rs.getString("userName");
+                userID = rs.getInt("idUsuario");
+                userName = rs.getString("nombreUsuario");
                 
             }
         }
