@@ -11,6 +11,10 @@ package capalogica;
 public class CLProveedor {
     private int idProveedor;
     private String nombreProveedor;
+    
+    public CLProveedor()
+    {  
+    }
 
     public int getIdProveedor() {
         return idProveedor;

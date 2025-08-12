@@ -4,6 +4,7 @@
  */
 package capapresentacion;
 
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 /**
@@ -172,21 +173,25 @@ public class JFraMDI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMICiudadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMICiudadActionPerformed
-          try {
-                JFraCiudad miCiudad = new JFraCiudad();
-                jDPPrincipal.add(miCiudad);
-                miCiudad.setVisible(true);
-        } catch (java.sql.SQLException ex) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "Error al abrir la ventana de Ciudad:\n" + ex.getMessage(),
-                    "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            try {
+            JFraCiudad ciudad = new JFraCiudad();
+            jDPPrincipal.add(ciudad);
+            ciudad.setVisible(true);
+        } catch (SQLException ex) {
+            System.getLogger(JFraMDI.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            JOptionPane.showMessageDialog(this, "Error al abrir la ventana Ciudad: " + ex.getMessage());
         }
     }//GEN-LAST:event_jMICiudadActionPerformed
 
     private void jMIProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMIProveedorActionPerformed
-        JFraProveedor proveedor = new JFraProveedor();
-        jDPPrincipal.add(proveedor);
-        proveedor.show();
+            try {
+            JFraProveedor proveedor = new JFraProveedor();
+            jDPPrincipal.add(proveedor);
+            proveedor.setVisible(true);
+        } catch (SQLException ex) {
+            System.getLogger(JFraMDI.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            JOptionPane.showMessageDialog(this, "Error al abrir la ventana Proveedor: " + ex.getMessage());
+        }
     }//GEN-LAST:event_jMIProveedorActionPerformed
 
     private void jMIProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMIProductoActionPerformed
@@ -196,9 +201,14 @@ public class JFraMDI extends javax.swing.JFrame {
     }//GEN-LAST:event_jMIProductoActionPerformed
 
     private void jMIMarcaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMIMarcaActionPerformed
-        JFraMarca marca = new JFraMarca();
-        jDPPrincipal.add(marca);
-        marca.show();
+            try {
+            JFraMarca marca = new JFraMarca();
+            jDPPrincipal.add(marca);
+            marca.setVisible(true);
+        } catch (SQLException ex) {
+            System.getLogger(JFraMDI.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            JOptionPane.showMessageDialog(this, "Error al abrir la ventana Marca: " + ex.getMessage());
+        }
     }//GEN-LAST:event_jMIMarcaActionPerformed
 
     private void jMIClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMIClienteActionPerformed
