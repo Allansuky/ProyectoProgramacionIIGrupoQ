@@ -60,7 +60,6 @@ public class JFraMDI extends javax.swing.JFrame {
         jMICiudad = new javax.swing.JMenuItem();
         jMIProveedor = new javax.swing.JMenuItem();
         jMIProducto = new javax.swing.JMenuItem();
-        jMIMarca = new javax.swing.JMenuItem();
         jMICliente = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMIUsuario = new javax.swing.JMenuItem();
@@ -123,21 +122,13 @@ public class JFraMDI extends javax.swing.JFrame {
         });
         jMenu3.add(jMIProveedor);
 
-        jMIProducto.setText("Producto");
+        jMIProducto.setText("Vehiculo");
         jMIProducto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMIProductoActionPerformed(evt);
             }
         });
         jMenu3.add(jMIProducto);
-
-        jMIMarca.setText("Marca");
-        jMIMarca.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMIMarcaActionPerformed(evt);
-            }
-        });
-        jMenu3.add(jMIMarca);
 
         jMICliente.setText("Cliente");
         jMICliente.addActionListener(new java.awt.event.ActionListener() {
@@ -200,21 +191,15 @@ public class JFraMDI extends javax.swing.JFrame {
         producto.show();
     }//GEN-LAST:event_jMIProductoActionPerformed
 
-    private void jMIMarcaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMIMarcaActionPerformed
-            try {
-            JFraMarca marca = new JFraMarca();
-            jDPPrincipal.add(marca);
-            marca.setVisible(true);
+    private void jMIClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMIClienteActionPerformed
+        try {
+            JFraCliente cliente = new JFraCliente();
+            jDPPrincipal.add(cliente);
+            cliente.setVisible(true);
         } catch (SQLException ex) {
             System.getLogger(JFraMDI.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-            JOptionPane.showMessageDialog(this, "Error al abrir la ventana Marca: " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, "Error al abrir la ventana Cliente: " + ex.getMessage());
         }
-    }//GEN-LAST:event_jMIMarcaActionPerformed
-
-    private void jMIClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMIClienteActionPerformed
-        JFraCliente cliente = new JFraCliente();
-        jDPPrincipal.add(cliente);
-        cliente.show();
     }//GEN-LAST:event_jMIClienteActionPerformed
 
     /**
@@ -247,7 +232,6 @@ public class JFraMDI extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMICiudad;
     private javax.swing.JMenuItem jMICliente;
     private javax.swing.JMenuItem jMIFacturacion;
-    private javax.swing.JMenuItem jMIMarca;
     private javax.swing.JMenuItem jMIProducto;
     private javax.swing.JMenuItem jMIProveedor;
     private javax.swing.JMenuItem jMISalir;
