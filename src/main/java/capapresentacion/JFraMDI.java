@@ -23,34 +23,12 @@ public class JFraMDI extends javax.swing.JFrame {
         setExtendedState(JFraMDI.MAXIMIZED_BOTH);
     }
     
-    public boolean validarInicioSesion(){
-        boolean estado;
-        
-        if (!this.jTFNombreUsuario.getText().equals("") && !this.jPFContraseña.getPassword().equals("")){
-            estado = true;
-            
-            this.jMenu2.setEnabled(true);
-            this.jMenu3.setEnabled(true);
-            this.jMenu4.setEnabled(true);
-            
-        } else {
-            estado = false;
-            JOptionPane.showMessageDialog(this, "Debe ingresar el nombre de usuario y la contraseña", 
-                    "Envoice System", JOptionPane.WARNING_MESSAGE);
-        }
-        return estado;
-        
-        
-
-    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jDPPrincipal = new javax.swing.JDesktopPane();
-        jTFNombreUsuario = new javax.swing.JTextField();
-        jPFContraseña = new javax.swing.JPasswordField();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMISalir = new javax.swing.JMenuItem();
@@ -66,28 +44,15 @@ public class JFraMDI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jDPPrincipal.setLayer(jTFNombreUsuario, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDPPrincipal.setLayer(jPFContraseña, javax.swing.JLayeredPane.DEFAULT_LAYER);
-
         javax.swing.GroupLayout jDPPrincipalLayout = new javax.swing.GroupLayout(jDPPrincipal);
         jDPPrincipal.setLayout(jDPPrincipalLayout);
         jDPPrincipalLayout.setHorizontalGroup(
             jDPPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jDPPrincipalLayout.createSequentialGroup()
-                .addGap(155, 155, 155)
-                .addGroup(jDPPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPFContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTFNombreUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(294, Short.MAX_VALUE))
+            .addGap(0, 487, Short.MAX_VALUE)
         );
         jDPPrincipalLayout.setVerticalGroup(
             jDPPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jDPPrincipalLayout.createSequentialGroup()
-                .addGap(142, 142, 142)
-                .addComponent(jTFNombreUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(50, 50, 50)
-                .addComponent(jPFContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(197, Short.MAX_VALUE))
+            .addGap(0, 374, Short.MAX_VALUE)
         );
 
         jMenu1.setText("Archivo");
@@ -153,11 +118,17 @@ public class JFraMDI extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jDPPrincipal)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jDPPrincipal)
+                .addGap(20, 20, 20))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jDPPrincipal)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jDPPrincipal)
+                .addGap(53, 53, 53))
         );
 
         pack();
@@ -186,9 +157,15 @@ public class JFraMDI extends javax.swing.JFrame {
     }//GEN-LAST:event_jMIProveedorActionPerformed
 
     private void jMIVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMIVehiculoActionPerformed
+            try {
         JFraVehiculo producto = new JFraVehiculo();
         jDPPrincipal.add(producto);
-        producto.show();
+        producto.setVisible(true); // Reemplaza .show() por .setVisible(true)
+    } catch (SQLException ex) {
+        System.getLogger(JFraMDI.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        JOptionPane.showMessageDialog(this, "Error al abrir la ventana Vehículo: " + ex.getMessage());
+    }
+
     }//GEN-LAST:event_jMIVehiculoActionPerformed
 
     private void jMIClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMIClienteActionPerformed
@@ -241,7 +218,5 @@ public class JFraMDI extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JPasswordField jPFContraseña;
-    private javax.swing.JTextField jTFNombreUsuario;
     // End of variables declaration//GEN-END:variables
 }

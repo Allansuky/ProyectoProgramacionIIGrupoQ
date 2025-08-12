@@ -31,7 +31,7 @@ public class CDCiudad {
     
     // Metodo para insertar tabla ciudad.
     public void insertarCiudad(CLCiudad cl) throws SQLException {
-        String sql = "{CALL usp_insertarCiudad(?)}";
+        String sql = "{CALL mostrarCiudades(?)}";
         
         try {
             ps = cn.prepareCall(sql);
@@ -94,7 +94,7 @@ public class CDCiudad {
     
     // Metodo para poblar de datos la tabla.
     public List<CLCiudad> obtenerListaCiudades() throws SQLException {
-        String sql = "{CALL usp_mostrarCiudades()}";
+        String sql = "{CALL mostrarCiudades()}";
         
         List<CLCiudad> miLista = null;
         
@@ -120,7 +120,7 @@ public class CDCiudad {
     
     // Metodo que permite llenar el combo ciudad
     public List<String> cargarComboCiudades() throws SQLException {
-        String sql = "{CALL sp_mostrarCiudades()}";
+        String sql = "{CALL mostrarCiudades()}";
 
         List<String> miLista = null;
 
