@@ -56,7 +56,7 @@ public class CDDetalleFactura {
 
     // Eliminar detalle de factura
     public void eliminarDetalle(CLDetalleFactura df) throws SQLException {
-        String sql = "{CALL usp_eliminarDetalleFactura(?)}";
+        String sql = "{CALL usp_eliminarDetalleFacturaX(?)}";
 
         try {
             ps = cn.prepareCall(sql);
@@ -69,7 +69,7 @@ public class CDDetalleFactura {
 
     // Obtener lista de detalles de factura
     public List<CLDetalleFactura> obtenerListaDetalleFactura() throws SQLException {
-        String sql = "{CALL usp_mostrarDetalleFactura()}";
+        String sql = "{CALL usp_mostrarDetallesFactura()}";
         List<CLDetalleFactura> lista = new ArrayList<>();
 
         try {

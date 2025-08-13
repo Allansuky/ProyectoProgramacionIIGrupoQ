@@ -29,14 +29,13 @@ public class JFraMDI extends javax.swing.JFrame {
     private void initComponents() {
 
         jDPPrincipal = new javax.swing.JDesktopPane();
+        jBtnAgregarFactura = new javax.swing.JButton();
+        jBtnDetalleFactura = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMISalir = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
-        jMIFacturacion = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         jMICiudad = new javax.swing.JMenuItem();
-        jMIProveedor = new javax.swing.JMenuItem();
         jMIVehiculo = new javax.swing.JMenuItem();
         jMICliente = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
@@ -44,15 +43,43 @@ public class JFraMDI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jDPPrincipal.addContainerListener(new java.awt.event.ContainerAdapter() {
+            public void componentRemoved(java.awt.event.ContainerEvent evt) {
+                jDPPrincipalComponentRemoved(evt);
+            }
+        });
+
+        jBtnAgregarFactura.setText("Agregar Factura");
+
+        jBtnDetalleFactura.setText("Detalle Factura");
+        jBtnDetalleFactura.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnDetalleFacturaActionPerformed(evt);
+            }
+        });
+
+        jDPPrincipal.setLayer(jBtnAgregarFactura, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDPPrincipal.setLayer(jBtnDetalleFactura, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
         javax.swing.GroupLayout jDPPrincipalLayout = new javax.swing.GroupLayout(jDPPrincipal);
         jDPPrincipal.setLayout(jDPPrincipalLayout);
         jDPPrincipalLayout.setHorizontalGroup(
             jDPPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 513, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDPPrincipalLayout.createSequentialGroup()
+                .addContainerGap(293, Short.MAX_VALUE)
+                .addGroup(jDPPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jBtnAgregarFactura, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
+                    .addComponent(jBtnDetalleFactura, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(85, 85, 85))
         );
         jDPPrincipalLayout.setVerticalGroup(
             jDPPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 433, Short.MAX_VALUE)
+            .addGroup(jDPPrincipalLayout.createSequentialGroup()
+                .addGap(81, 81, 81)
+                .addComponent(jBtnAgregarFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jBtnDetalleFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(237, Short.MAX_VALUE))
         );
 
         jMenu1.setText("Archivo");
@@ -61,13 +88,6 @@ public class JFraMDI extends javax.swing.JFrame {
         jMenu1.add(jMISalir);
 
         jMenuBar1.add(jMenu1);
-
-        jMenu2.setText("Transacciones");
-
-        jMIFacturacion.setText("Facturacion");
-        jMenu2.add(jMIFacturacion);
-
-        jMenuBar1.add(jMenu2);
 
         jMenu3.setText("Mantenimiento");
 
@@ -78,14 +98,6 @@ public class JFraMDI extends javax.swing.JFrame {
             }
         });
         jMenu3.add(jMICiudad);
-
-        jMIProveedor.setText("Proveedor");
-        jMIProveedor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMIProveedorActionPerformed(evt);
-            }
-        });
-        jMenu3.add(jMIProveedor);
 
         jMIVehiculo.setText("Vehiculo");
         jMIVehiculo.addActionListener(new java.awt.event.ActionListener() {
@@ -139,17 +151,6 @@ public class JFraMDI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMICiudadActionPerformed
 
-    private void jMIProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMIProveedorActionPerformed
-            try {
-            JFraProveedor proveedor = new JFraProveedor();
-            jDPPrincipal.add(proveedor);
-            proveedor.setVisible(true);
-        } catch (SQLException ex) {
-            System.getLogger(JFraMDI.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-            JOptionPane.showMessageDialog(this, "Error al abrir la ventana Proveedor: " + ex.getMessage());
-        }
-    }//GEN-LAST:event_jMIProveedorActionPerformed
-
     private void jMIVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMIVehiculoActionPerformed
             try {
         JFraVehiculo producto = new JFraVehiculo();
@@ -172,6 +173,21 @@ public class JFraMDI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Error al abrir la ventana Cliente: " + ex.getMessage());
         }
     }//GEN-LAST:event_jMIClienteActionPerformed
+
+    private void jDPPrincipalComponentRemoved(java.awt.event.ContainerEvent evt) {//GEN-FIRST:event_jDPPrincipalComponentRemoved
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jDPPrincipalComponentRemoved
+
+    private void jBtnDetalleFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnDetalleFacturaActionPerformed
+         try {
+            JFraDetalleFactura detalleFactura = new JFraDetalleFactura();
+            jDPPrincipal.add(detalleFactura);
+            detalleFactura.setVisible(true);
+        } catch (SQLException ex) {
+            System.getLogger(JFraMDI.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            JOptionPane.showMessageDialog(this, "Error al abrir la ventana Cliente: " + ex.getMessage());
+        }
+    }//GEN-LAST:event_jBtnDetalleFacturaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -199,16 +215,15 @@ public class JFraMDI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jBtnAgregarFactura;
+    private javax.swing.JButton jBtnDetalleFactura;
     private javax.swing.JDesktopPane jDPPrincipal;
     private javax.swing.JMenuItem jMICiudad;
     private javax.swing.JMenuItem jMICliente;
-    private javax.swing.JMenuItem jMIFacturacion;
-    private javax.swing.JMenuItem jMIProveedor;
     private javax.swing.JMenuItem jMISalir;
     private javax.swing.JMenuItem jMIUsuario;
     private javax.swing.JMenuItem jMIVehiculo;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
