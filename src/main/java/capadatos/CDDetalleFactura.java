@@ -8,74 +8,68 @@ import capalogica.CLDetalleFactura;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JOptionPane;
 
 public class CDDetalleFactura {
 
     private final Connection cn;
-    PreparedStatement ps;
-    ResultSet rs;
-    Statement st;
 
     public CDDetalleFactura() throws SQLException {
         this.cn = Conexion.conectar();
     }
 
-    // Insertar detalle de factura
+    /**
+     * Inserta un nuevo detalle de factura, incluyendo la fecha.
+     * Llama a usp_insertarDetalleFactura(cantidad, precioUnitario, idFactura, codVehiculo, fecha)
+     */
     public void insertarDetalle(CLDetalleFactura df) throws SQLException {
-        String sql = "{CALL usp_insertarDetalleFactura(?,?,?,?)}"; // idDetalle es autoincrement
-
-        try {
-            ps = cn.prepareCall(sql);
-            ps.setInt(1, df.getCantidad());
-            ps.setDouble(2, df.getPrecioUnitario());
-            ps.setInt(3, df.getIdFactura());
-            ps.setString(4, df.getCodVehiculo());
-            ps.execute();
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al insertar detalle: " + e.getMessage());
+        String sql = "{CALL usp_insertarDetalleFactura(?,?,?,?,?)}";
+        try (CallableStatement cs = cn.prepareCall(sql)) {
+            cs.setInt(1, df.getCantidad());
+            cs.setDouble(2, df.getPrecioUnitario());
+            cs.setInt(3, df.getIdFactura());
+            cs.setString(4, df.getCodVehiculo());
+            cs.setString(5, df.getFecha());
+            cs.execute();
         }
     }
 
-    // Actualizar detalle de factura
+    /**
+     * Actualiza todos los campos de un detalle de factura, incluida la fecha.
+     * Llama a usp_actualizarDetalleFactura(idDetalle, cantidad, precioUnitario, fecha, codVehiculo)
+     */
     public void actualizarDetalle(CLDetalleFactura df) throws SQLException {
         String sql = "{CALL usp_actualizarDetalleFactura(?,?,?,?,?)}";
-
-        try {
-            ps = cn.prepareCall(sql);
-            ps.setInt(1, df.getDetalle());
-            ps.setInt(2, df.getCantidad());
-            ps.setDouble(3, df.getPrecioUnitario());
-            ps.setInt(4, df.getIdFactura());
-            ps.setString(5, df.getCodVehiculo());
-            ps.execute();
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al actualizar detalle: " + e.getMessage());
+        try (CallableStatement cs = cn.prepareCall(sql)) {
+            cs.setInt(1, df.getDetalle());
+            cs.setInt(2, df.getCantidad());
+            cs.setDouble(3, df.getPrecioUnitario());
+            cs.setString(4, df.getFecha());
+            cs.setString(5, df.getCodVehiculo());
+            cs.execute();
         }
     }
 
-    // Eliminar detalle de factura
+    /**
+     * Elimina un detalle de factura por su ID.
+     * Llama a usp_eliminarDetalleFacturaX(idDetalle)
+     */
     public void eliminarDetalle(CLDetalleFactura df) throws SQLException {
         String sql = "{CALL usp_eliminarDetalleFacturaX(?)}";
-
-        try {
-            ps = cn.prepareCall(sql);
-            ps.setInt(1, df.getDetalle());
-            ps.execute();
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al eliminar detalle: " + e.getMessage());
+        try (CallableStatement cs = cn.prepareCall(sql)) {
+            cs.setInt(1, df.getDetalle());
+            cs.execute();
         }
     }
 
-    // Obtener lista de detalles de factura
+    /**
+     * Recupera todos los detalles de factura, incluyendo la fecha.
+     * Llama a usp_mostrarDetallesFactura()
+     */
     public List<CLDetalleFactura> obtenerListaDetalleFactura() throws SQLException {
-        String sql = "{CALL usp_mostrarDetallesFactura()}";
         List<CLDetalleFactura> lista = new ArrayList<>();
-
-        try {
-            st = cn.createStatement();
-            rs = st.executeQuery(sql);
-
+        String sql = "{CALL usp_mostrarDetallesFactura()}";
+        try (CallableStatement cs = cn.prepareCall(sql);
+             ResultSet rs = cs.executeQuery()) {
             while (rs.next()) {
                 CLDetalleFactura df = new CLDetalleFactura();
                 df.setDetalle(rs.getInt("idDetalle"));
@@ -83,11 +77,23 @@ public class CDDetalleFactura {
                 df.setPrecioUnitario(rs.getDouble("precioUnitario"));
                 df.setIdFactura(rs.getInt("idFactura"));
                 df.setCodVehiculo(rs.getString("codVehiculo"));
+                df.setFecha(rs.getString("fecha"));
                 lista.add(df);
             }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al obtener detalles: " + e.getMessage());
         }
         return lista;
+    }
+
+    /**
+     * Actualiza solamente la fecha de un detalle.
+     * Llama a usp_actualizarFechaDetalleFactura(idDetalle, nuevaFecha)
+     */
+    public void actualizarFechaDetalle(CLDetalleFactura df) throws SQLException {
+        String sql = "{CALL usp_actualizarFechaDetalleFactura(?,?)}";
+        try (CallableStatement cs = cn.prepareCall(sql)) {
+            cs.setInt(1, df.getDetalle());
+            cs.setString(2, df.getFecha());
+            cs.execute();
+        }
     }
 }

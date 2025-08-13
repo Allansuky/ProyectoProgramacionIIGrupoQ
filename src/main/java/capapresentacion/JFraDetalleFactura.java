@@ -12,32 +12,38 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class JFraDetalleFactura extends javax.swing.JInternalFrame {
-    
+
+    public JFraDetalleFactura() throws SQLException {
+        initComponents();
+        poblarTablaDetalleFactura();
+        poblarTablaFechas();
+        this.jTFFecha.requestFocus();
+    }
+
+    // habilita o deshabilita botones según la operación
     private void habilitarBotones(boolean guardar, boolean editar, boolean eliminar, boolean limpiar) {
         this.jBtnGuardar.setEnabled(guardar);
         this.jBtnEditar.setEnabled(editar);
         this.jBtnEliminar.setEnabled(eliminar);
         this.jBtnLimpiar.setEnabled(limpiar);
-    }
-    
-    private boolean limpiarTextField() {
-        this.jTFCantidad.setText("");
-        this.jTFCodVehiculo.setText("");
-        this.jTFPrecioUnitario.setText("");
-        this.jTFidDetalle.setText("");
-        this.jTFidFactura.setText("");
-        this.jTFidDetalle.requestFocus();
-        return false;
+        this.jBtnActualizarFecha.setEnabled(!guardar); // solo activa al editar
     }
 
-    public JFraDetalleFactura() throws SQLException {
-        initComponents();
-        poblarTablaDetalleFactura();
-        this.jTFCodVehiculo.requestFocus();
+    // limpia los campos de texto
+    private void limpiarCampos() {
+        jTFidDetalle.setText("");
+        jTFCantidad.setText("");
+        jTFPrecioUnitario.setText("");
+        jTFidFactura.setText("");
+        jTFFecha.setText("");
+        jTFFecha.setText("");
+        jTFFecha.requestFocus();
+        habilitarBotones(true, false, false, true);
     }
 
+    // Tabla 1: Detalles completos
     private void limpiarTabla() {
-        DefaultTableModel dtm = (DefaultTableModel) this.jTblTablaFactura.getModel();
+        DefaultTableModel dtm = (DefaultTableModel) jTblTablaFactura.getModel();
         while (dtm.getRowCount() > 0) {
             dtm.removeRow(0);
         }
@@ -47,28 +53,54 @@ public class JFraDetalleFactura extends javax.swing.JInternalFrame {
         limpiarTabla();
         CDDetalleFactura cd = new CDDetalleFactura();
         List<CLDetalleFactura> lista = cd.obtenerListaDetalleFactura();
-        DefaultTableModel temp = (DefaultTableModel) this.jTblTablaFactura.getModel();
+        DefaultTableModel model = (DefaultTableModel) jTblTablaFactura.getModel();
 
-        lista.forEach((CLDetalleFactura df) -> {
-            Object[] fila = new Object[5];
+        for (CLDetalleFactura df : lista) {
+            Object[] fila = new Object[6];
             fila[0] = df.getDetalle();
             fila[1] = df.getCantidad();
             fila[2] = df.getPrecioUnitario();
             fila[3] = df.getIdFactura();
             fila[4] = df.getCodVehiculo();
-            temp.addRow(fila);
-        });
+            fila[5] = df.getFecha();
+            model.addRow(fila);
+        }
     }
 
-    private boolean validarCampos() {
+    // Tabla 2: Solo fecha editable
+    private void limpiarTablaFechas() {
+        DefaultTableModel dtm = (DefaultTableModel) jTblFechas.getModel();
+        while (dtm.getRowCount() > 0) {
+            dtm.removeRow(0);
+        }
+    }
+
+    private void poblarTablaFechas() throws SQLException {
+        limpiarTablaFechas();
+        CDDetalleFactura cd = new CDDetalleFactura();
+        List<CLDetalleFactura> lista = cd.obtenerListaDetalleFactura();
+        DefaultTableModel model = (DefaultTableModel) jTblFechas.getModel();
+
+        for (CLDetalleFactura df : lista) {
+            Object[] fila = new Object[2];
+            fila[0] = df.getDetalle();
+            fila[1] = df.getFecha();
+            model.addRow(fila);
+        }
+    }
+
+    // Valida que todos los campos requeridos estén completos
+    private boolean validarCamposDetalle() {
         return !jTFCantidad.getText().trim().isEmpty()
             && !jTFPrecioUnitario.getText().trim().isEmpty()
             && !jTFidFactura.getText().trim().isEmpty()
-            && !jTFCodVehiculo.getText().trim().isEmpty();
+            && !jTFFecha.getText().trim().isEmpty()
+            && !jTFFecha.getText().trim().isEmpty();
     }
 
+    // Inserta un nuevo detalle incluyendo la fecha
     private void insertarDetalleFactura() {
-        if (!validarCampos()) {
+        if (!validarCamposDetalle()) {
             JOptionPane.showMessageDialog(null, "Complete todos los campos", "Detalle Factura", JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -78,7 +110,8 @@ public class JFraDetalleFactura extends javax.swing.JInternalFrame {
             df.setCantidad(Integer.parseInt(jTFCantidad.getText().trim()));
             df.setPrecioUnitario(Double.parseDouble(jTFPrecioUnitario.getText().trim()));
             df.setIdFactura(Integer.parseInt(jTFidFactura.getText().trim()));
-            df.setCodVehiculo(jTFCodVehiculo.getText().trim());
+            df.setCodVehiculo(jTFFecha.getText().trim());
+            df.setFecha(jTFFecha.getText().trim());
             cd.insertarDetalle(df);
             JOptionPane.showMessageDialog(null, "Detalle guardado correctamente.", "Detalle Factura", JOptionPane.INFORMATION_MESSAGE);
         } catch (SQLException ex) {
@@ -89,11 +122,13 @@ public class JFraDetalleFactura extends javax.swing.JInternalFrame {
     private void guardar() throws SQLException {
         insertarDetalleFactura();
         poblarTablaDetalleFactura();
+        poblarTablaFechas();
         limpiarCampos();
     }
 
+    // Actualiza todos los campos de un detalle
     private void actualizarDetalleFactura() {
-        if (!validarCampos()) {
+        if (!validarCamposDetalle()) {
             JOptionPane.showMessageDialog(null, "Complete todos los campos", "Detalle Factura", JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -104,7 +139,8 @@ public class JFraDetalleFactura extends javax.swing.JInternalFrame {
             df.setCantidad(Integer.parseInt(jTFCantidad.getText().trim()));
             df.setPrecioUnitario(Double.parseDouble(jTFPrecioUnitario.getText().trim()));
             df.setIdFactura(Integer.parseInt(jTFidFactura.getText().trim()));
-            df.setCodVehiculo(jTFCodVehiculo.getText().trim());
+            df.setCodVehiculo(jTFFecha.getText().trim());
+            df.setFecha(jTFFecha.getText().trim());
             cd.actualizarDetalle(df);
             JOptionPane.showMessageDialog(null, "Detalle actualizado correctamente.", "Detalle Factura", JOptionPane.INFORMATION_MESSAGE);
         } catch (SQLException ex) {
@@ -115,9 +151,11 @@ public class JFraDetalleFactura extends javax.swing.JInternalFrame {
     private void editar() throws SQLException {
         actualizarDetalleFactura();
         poblarTablaDetalleFactura();
+        poblarTablaFechas();
         limpiarCampos();
     }
 
+    // Elimina un detalle completo
     private void eliminarDetalleFactura() {
         try {
             CDDetalleFactura cd = new CDDetalleFactura();
@@ -135,27 +173,64 @@ public class JFraDetalleFactura extends javax.swing.JInternalFrame {
         if (resp == JOptionPane.YES_OPTION) {
             eliminarDetalleFactura();
             poblarTablaDetalleFactura();
+            poblarTablaFechas();
             limpiarCampos();
         }
     }
 
+    // Cuando el usuario selecciona una fila en la primera tabla
     private void filaSeleccionada() {
-        if (this.jTblTablaFactura.getSelectedRow() != -1) {
-            this.jTFidDetalle.setText(String.valueOf(this.jTblTablaFactura.getValueAt(this.jTblTablaFactura.getSelectedRow(), 0)));
-            this.jTFCantidad.setText(String.valueOf(this.jTblTablaFactura.getValueAt(this.jTblTablaFactura.getSelectedRow(), 1)));
-            this.jTFPrecioUnitario.setText(String.valueOf(this.jTblTablaFactura.getValueAt(this.jTblTablaFactura.getSelectedRow(), 2)));
-            this.jTFidFactura.setText(String.valueOf(this.jTblTablaFactura.getValueAt(this.jTblTablaFactura.getSelectedRow(), 3)));
-            this.jTFCodVehiculo.setText(String.valueOf(this.jTblTablaFactura.getValueAt(this.jTblTablaFactura.getSelectedRow(), 4)));
+        int row = this.jTblTablaFactura.getSelectedRow();
+        if (row != -1) {
+            jTFidDetalle.setText(String.valueOf(this.jTblTablaFactura.getValueAt(row, 0)));
+            jTFCantidad.setText(String.valueOf(this.jTblTablaFactura.getValueAt(row, 1)));
+            jTFPrecioUnitario.setText(String.valueOf(this.jTblTablaFactura.getValueAt(row, 2)));
+            jTFidFactura.setText(String.valueOf(this.jTblTablaFactura.getValueAt(row, 3)));
+            jTFFecha.setText(String.valueOf(this.jTblTablaFactura.getValueAt(row, 4)));
+            jTFFecha.setText(String.valueOf(this.jTblTablaFactura.getValueAt(row, 5)));
+            habilitarBotones(false, true, true, true);
         }
     }
 
-    private void limpiarCampos() {
+    // Cuando el usuario selecciona una fila en la segunda tabla (solo fecha)
+    private void filaFechaSeleccionada() {
+        int row = this.jTblFechas.getSelectedRow();
+        if (row != -1) {
+            jTFidDetalle.setText(String.valueOf(this.jTblFechas.getValueAt(row, 0)));
+            jTFFecha.setText(String.valueOf(this.jTblFechas.getValueAt(row, 1)));
+            habilitarBotones(false, false, false, true);
+            this.jBtnActualizarFecha.setEnabled(true);
+        }
+    }
+
+    // Solo actualiza la fecha de un detalle
+    private void actualizarSoloFecha() {
+        if (jTFidDetalle.getText().trim().isEmpty() || jTFFecha.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Complete ID Detalle y Fecha", "Actualizar Fecha", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        try {
+            CDDetalleFactura cd = new CDDetalleFactura();
+            CLDetalleFactura df = new CLDetalleFactura();
+            df.setDetalle(Integer.parseInt(jTFidDetalle.getText().trim()));
+            df.setFecha(jTFFecha.getText().trim());
+            cd.actualizarFechaDetalle(df);
+            JOptionPane.showMessageDialog(null, "Fecha actualizada correctamente.", "Actualizar Fecha", JOptionPane.INFORMATION_MESSAGE);
+            poblarTablaFechas();
+            limpiarCampos();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error al actualizar fecha: " + ex.getMessage());
+        }
+    }
+    
+    private void limpiarTextField() {
         jTFidDetalle.setText("");
         jTFCantidad.setText("");
         jTFPrecioUnitario.setText("");
         jTFidFactura.setText("");
         jTFCodVehiculo.setText("");
-        jTFCantidad.requestFocus();
+        jTFFecha.setText("");
+        jTFidDetalle.requestFocus();
     }
 
     /**
@@ -183,7 +258,12 @@ public class JFraDetalleFactura extends javax.swing.JInternalFrame {
         jLabel5 = new javax.swing.JLabel();
         jTFidFactura = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
+        jTFFecha = new javax.swing.JTextField();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTblFechas = new javax.swing.JTable();
+        jLabel7 = new javax.swing.JLabel();
         jTFCodVehiculo = new javax.swing.JTextField();
+        jBtnActualizarFecha = new javax.swing.JButton();
 
         setClosable(true);
 
@@ -271,73 +351,117 @@ public class JFraDetalleFactura extends javax.swing.JInternalFrame {
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setText("ID Factura");
 
+        jTblFechas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Fecha", "Subtotal", "Impuesto", "Total"
+            }
+        ));
+        jScrollPane2.setViewportView(jTblFechas);
+
+        jLabel7.setBackground(new java.awt.Color(0, 0, 0));
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel7.setText("Fecha");
+
+        jBtnActualizarFecha.setText("Actualizar Fecha");
+        jBtnActualizarFecha.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnActualizarFechaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jTFCodVehiculo)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTFCantidad)
-                            .addComponent(jLabel1)
-                            .addComponent(jTFidDetalle)
-                            .addComponent(jLabel2)
-                            .addComponent(jTFPrecioUnitario)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel4)
-                            .addComponent(jTFidFactura, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE))
-                        .addComponent(jLabel6)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(jBtnGuardar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jBtnEditar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jBtnLimpiar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jBtnEliminar)
-                        .addGap(36, 36, 36))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(16, 16, 16))))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jTFCantidad)
+                                .addComponent(jLabel1)
+                                .addComponent(jTFidDetalle)
+                                .addComponent(jLabel2)
+                                .addComponent(jTFPrecioUnitario)
+                                .addComponent(jLabel5)
+                                .addComponent(jLabel4)
+                                .addComponent(jTFidFactura, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE))
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel7))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTFCodVehiculo)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jTFFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 947, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(310, 310, 310)
+                .addComponent(jBtnGuardar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jBtnEditar)
+                .addGap(18, 18, 18)
+                .addComponent(jBtnLimpiar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jBtnEliminar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jBtnActualizarFecha)
+                .addGap(0, 464, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addComponent(jLabel1)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(25, 25, 25)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTFidDetalle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTFCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(8, 8, 8)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTFPrecioUnitario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel6))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTFidDetalle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTFCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(8, 8, 8)
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTFPrecioUnitario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTFidFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTFCodVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(24, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jTFidFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTFCodVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTFFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jBtnGuardar)
                     .addComponent(jBtnEditar)
                     .addComponent(jBtnLimpiar)
-                    .addComponent(jBtnEliminar))
-                .addGap(84, 84, 84))
+                    .addComponent(jBtnEliminar)
+                    .addComponent(jBtnActualizarFecha))
+                .addGap(14, 14, 14))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -346,8 +470,8 @@ public class JFraDetalleFactura extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(8, 8, 8)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -401,8 +525,13 @@ public class JFraDetalleFactura extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTFidFacturaActionPerformed
 
+    private void jBtnActualizarFechaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnActualizarFechaActionPerformed
+        // TODO add your handling code here
+    }//GEN-LAST:event_jBtnActualizarFechaActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jBtnActualizarFecha;
     private javax.swing.JButton jBtnEditar;
     private javax.swing.JButton jBtnEliminar;
     private javax.swing.JButton jBtnGuardar;
@@ -412,13 +541,17 @@ public class JFraDetalleFactura extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField jTFCantidad;
     private javax.swing.JTextField jTFCodVehiculo;
+    private javax.swing.JTextField jTFFecha;
     private javax.swing.JTextField jTFPrecioUnitario;
     private javax.swing.JTextField jTFidDetalle;
     private javax.swing.JTextField jTFidFactura;
+    private javax.swing.JTable jTblFechas;
     private javax.swing.JTable jTblTablaFactura;
     // End of variables declaration//GEN-END:variables
 }

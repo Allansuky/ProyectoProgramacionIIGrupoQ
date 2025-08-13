@@ -15,6 +15,7 @@ public class CLDetalleFactura {
     private double precioUnitario;
     private int idFactura;
     private String codVehiculo;
+    private String fecha;
 
     public int getDetalle() {
         return detalle;
@@ -56,6 +57,12 @@ public class CLDetalleFactura {
         this.codVehiculo = codVehiculo;
     }
     
-    
+     public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
     
 }
