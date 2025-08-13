@@ -84,7 +84,7 @@ public class CDVehiculo {
     }
 
     public List<CLVehiculo> obtenerListaVehiculo() throws SQLException {
-        String sql = "{CALL usp_mostrarVehiculo()}";
+        String sql = "{CALL usp_mostrarVehiculos()}";
         List<CLVehiculo> lista = new ArrayList<>();
 
         try {

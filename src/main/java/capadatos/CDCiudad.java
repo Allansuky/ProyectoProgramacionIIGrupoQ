@@ -31,7 +31,7 @@ public class CDCiudad {
     
     // Metodo para insertar tabla ciudad.
     public void insertarCiudad(CLCiudad cl) throws SQLException {
-        String sql = "{CALL mostrarCiudades(?)}";
+        String sql = "{CALL usp_insertarCiudad(?)}";
         
         try {
             ps = cn.prepareCall(sql);
