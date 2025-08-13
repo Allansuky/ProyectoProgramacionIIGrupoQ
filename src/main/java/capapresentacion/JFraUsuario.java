@@ -27,9 +27,9 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
     }
     
      private void habilitarBotones() {
-        this.jBtnAgregar.setEnabled(true);
         this.jBtnGuardar.setEnabled(true);
-        this.jBtnMostrar.setEnabled(true);
+        this.jBtnEliminar.setEnabled(true);
+        this.jBtnEditar.setEnabled(true);
         this.jBtnLimpiar.setEnabled(true);
     }
     
@@ -85,6 +85,12 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, "Error" + e);
         }
     }
+    private void filaSeleccionada() {
+        if (this.jTblDatosUsuario.getSelectedRow() != -1) {
+            this.jTFidUsuario.setText(String.valueOf(this.jTblDatosUsuario.getValueAt(this.jTblDatosUsuario.getSelectedRow(), 0)));
+            this.jTFnombreUsuario.setText(String.valueOf(this.jTblDatosUsuario.getValueAt(this.jTblCiudades.getSelectedRow(), 1)));
+        }
+    }
     
     private void limpiarTabla() {
         int fila = this.jTblDatosUsuario.getRowCount();
@@ -104,9 +110,9 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
 
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTblVehiculos = new javax.swing.JTable();
-        jTFModeloVehiculo = new javax.swing.JTextField();
-        jTFCodVehiculo = new javax.swing.JTextField();
+        jTblDatosUsuario = new javax.swing.JTable();
+        jTFcontraseña = new javax.swing.JTextField();
+        jTFidUsuario = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jBtnGuardar = new javax.swing.JButton();
@@ -115,10 +121,8 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
         jBtnEliminar = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jTFPrecioUnitario = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        jTFCantidad = new javax.swing.JTextField();
-        jTFMarcaVehiculo = new javax.swing.JTextField();
+        jTFnombreUsuario = new javax.swing.JTextField();
 
         setClosable(true);
 
@@ -126,24 +130,24 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Datos Usuario", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 24), new java.awt.Color(255, 255, 255))); // NOI18N
         jPanel2.setForeground(new java.awt.Color(255, 255, 255));
 
-        jTblVehiculos.setModel(new javax.swing.table.DefaultTableModel(
+        jTblDatosUsuario.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Cod Vehiculo", "Marca", "Modelo", "Precio Unitario", "Cantidad"
+                "idUsuario", "nombreUsuario", "contraseña", "estado", "rol"
             }
         ));
-        jTblVehiculos.addMouseListener(new java.awt.event.MouseAdapter() {
+        jTblDatosUsuario.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTblVehiculosMouseClicked(evt);
+                jTblDatosUsuarioMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(jTblVehiculos);
+        jScrollPane1.setViewportView(jTblDatosUsuario);
 
-        jTFCodVehiculo.addActionListener(new java.awt.event.ActionListener() {
+        jTFidUsuario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTFCodVehiculoActionPerformed(evt);
+                jTFidUsuarioActionPerformed(evt);
             }
         });
 
@@ -188,17 +192,23 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
         jLabel3.setBackground(new java.awt.Color(0, 0, 0));
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("Modelo");
+        jLabel3.setText("Contraseña");
 
         jLabel4.setBackground(new java.awt.Color(0, 0, 0));
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setText("Cantidad");
+        jLabel4.setText("rol");
 
         jLabel5.setBackground(new java.awt.Color(0, 0, 0));
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel5.setText("Precio Unitario");
+        jLabel5.setText("Estado");
+
+        jTFnombreUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTFnombreUsuarioActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -213,17 +223,17 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
                         .addGap(25, 25, 25)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel2)
-                            .addComponent(jTFCodVehiculo, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
-                            .addComponent(jTFModeloVehiculo)
-                            .addComponent(jTFPrecioUnitario)
-                            .addComponent(jTFCantidad, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel4)
+                            .addComponent(jTFidUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
+                            .addComponent(jTFcontraseña)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGap(10, 10, 10)
-                                .addComponent(jLabel3))))
+                                .addComponent(jLabel3))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(14, 14, 14)
+                                .addComponent(jLabel4))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGap(22, 22, 22)
-                        .addComponent(jTFMarcaVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jTFnombreUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 701, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -246,34 +256,33 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(17, 17, 17)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTFCodVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTFidUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel2)
                         .addGap(18, 18, 18)
-                        .addComponent(jTFMarcaVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTFnombreUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTFModeloVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jTFPrecioUnitario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jBtnGuardar)
-                        .addComponent(jBtnEditar)
-                        .addComponent(jBtnLimpiar)
-                        .addComponent(jBtnEliminar))
-                    .addComponent(jTFCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(145, Short.MAX_VALUE))
+                        .addComponent(jTFcontraseña, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(95, 95, 95)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(56, 56, 56)))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jBtnGuardar)
+                    .addComponent(jBtnEditar)
+                    .addComponent(jBtnLimpiar)
+                    .addComponent(jBtnEliminar))
+                .addContainerGap(146, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel2Layout.createSequentialGroup()
                     .addGap(243, 243, 243)
@@ -301,14 +310,14 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTblVehiculosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTblVehiculosMouseClicked
+    private void jTblDatosUsuarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTblDatosUsuarioMouseClicked
         filaSeleccionada();
-        habilitarBotones(false,true,true,true);
-    }//GEN-LAST:event_jTblVehiculosMouseClicked
+        habilitarBotones();
+    }//GEN-LAST:event_jTblDatosUsuarioMouseClicked
 
-    private void jTFCodVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTFCodVehiculoActionPerformed
+    private void jTFidUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTFidUsuarioActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTFCodVehiculoActionPerformed
+    }//GEN-LAST:event_jTFidUsuarioActionPerformed
 
     private void jBtnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnGuardarActionPerformed
         try {
@@ -338,6 +347,10 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jBtnEliminarActionPerformed
 
+    private void jTFnombreUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTFnombreUsuarioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTFnombreUsuarioActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jBtnEditar;
@@ -351,11 +364,9 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTFCantidad;
-    private javax.swing.JTextField jTFCodVehiculo;
-    private javax.swing.JTextField jTFMarcaVehiculo;
-    private javax.swing.JTextField jTFModeloVehiculo;
-    private javax.swing.JTextField jTFPrecioUnitario;
-    private javax.swing.JTable jTblVehiculos;
+    private javax.swing.JTextField jTFcontraseña;
+    private javax.swing.JTextField jTFidUsuario;
+    private javax.swing.JTextField jTFnombreUsuario;
+    private javax.swing.JTable jTblDatosUsuario;
     // End of variables declaration//GEN-END:variables
 }
