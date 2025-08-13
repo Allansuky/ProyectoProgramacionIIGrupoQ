@@ -4,11 +4,13 @@
  */
 package capapresentacion;
 
+import capadatos.CDUsuario;
+import capalogica.CLUsuario;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Scanner;
+import java.sql.SQLException;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -26,7 +28,7 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
         dtm = (DefaultTableModel) this.jTblDatosUsuario.getModel();
     }
     
-     private void habilitarBotones() {
+    private void habilitarBotones() {
         this.jBtnGuardar.setEnabled(true);
         this.jBtnEliminar.setEnabled(true);
         this.jBtnEditar.setEnabled(true);
@@ -47,6 +49,24 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
         }
     }
     
+    private void poblarTablaUsuarios() throws SQLException {
+        limpiarTabla(); // método que limpia el modelo de la tabla
+        CDUsuario cdUsuario = new CDUsuario(); // capa de datos
+        List<CLUsuario> lista = cdUsuario.obtenerListaUsuario(); // obtiene la lista
+        DefaultTableModel temp = (DefaultTableModel) this.jTblDatosUsuario.getModel(); // modelo de la tabla
+
+        lista.forEach((CLUsuario u) -> {
+            Object[] fila = new Object[5];
+            fila[0] = u.getIdUsuario();
+            fila[1] = u.getNombreUsuario();
+            fila[2] = u.getContraseña(); // o getContraseña() si mantienes la tilde
+            fila[3] = u.isEstado() ? "Activo" : "Inactivo"; // muestra estado como texto
+            fila[4] = u.getRol();
+            temp.addRow(fila);
+        });
+}
+
+    
     private void guardarArchivo() {
         
         try {
@@ -64,31 +84,10 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
         }
     }
     
-    private void mostrarArchivo() {
-        String id, nombre, contraseña;
-        
-        String au = "archivoUsuario.txt";
-        
-        File arcLectura = new File(au);
-        
-        try {
-            Scanner lecturaArchivo = new Scanner(arcLectura);
-            
-            while(lecturaArchivo.hasNextLine()) {
-                id = lecturaArchivo.nextLine();
-                nombre = lecturaArchivo.nextLine();
-                contraseña = lecturaArchivo.nextLine();
-                
-                dtm.addRow(new Object[]{id, nombre});
-            }
-        } catch(FileNotFoundException e) {
-            JOptionPane.showMessageDialog(null, "Error" + e);
-        }
-    }
     private void filaSeleccionada() {
         if (this.jTblDatosUsuario.getSelectedRow() != -1) {
             this.jTFidUsuario.setText(String.valueOf(this.jTblDatosUsuario.getValueAt(this.jTblDatosUsuario.getSelectedRow(), 0)));
-            this.jTFnombreUsuario.setText(String.valueOf(this.jTblDatosUsuario.getValueAt(this.jTblCiudades.getSelectedRow(), 1)));
+            this.jTFnombreUsuario.setText(String.valueOf(this.jTblDatosUsuario.getValueAt(this.jTblDatosUsuario.getSelectedRow(), 1)));
         }
     }
     
@@ -97,6 +96,41 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
         for (int i = fila - 1; i>= 0; i--) {
             dtm.removeRow(i);
         }
+    }
+    private void encontrarCorrelativo() throws SQLException {
+        CDUsuario cdUsuario = new CDUsuario();
+        this.jTFidUsuario.setText(String.valueOf(cdUsuario.autoIncrementarUsuarioID()));
+    }
+    
+        private void eliminarUsuario() {
+        try {
+            CDUsuario cdUsuario = new CDUsuario(); 
+            CLUsuario u = new CLUsuario();         
+            u.setIdUsuario(Integer.parseInt(jTFidUsuario.getText().trim())); 
+            cdUsuario.eliminarUsuario(u);          // método que ejecuta el DELETE
+            JOptionPane.showMessageDialog(null, "Usuario eliminado correctamente.", "Usuarios", JOptionPane.INFORMATION_MESSAGE);
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error al eliminar: " + ex.getMessage());
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(null, "ID inválido. Debe ser un número entero.");
+        }
+    }
+
+    private void eliminar() throws SQLException {
+        int resp = JOptionPane.showConfirmDialog(null, "¿Desea eliminar el usuario?", "Usuarios", JOptionPane.YES_NO_OPTION);
+        if (resp == JOptionPane.YES_OPTION) {
+            eliminarUsuario();
+            poblarTablaUsuarios(); // método que actualiza la tabla
+            encontrarCorrelativo(); // si usas correlativos para nuevos IDs
+        }
+    }
+
+    
+    private boolean limpiarTextField() {
+        this.jTFidUsuario.setText("");
+        this.jTFnombreUsuario.setText("");
+        this.jTFcontraseña.requestFocus();
+        return false;
     }
     
     /**
@@ -123,6 +157,8 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jTFnombreUsuario = new javax.swing.JTextField();
+        jCBEstado = new javax.swing.JComboBox<>();
+        jCBRol = new javax.swing.JComboBox<>();
 
         setClosable(true);
 
@@ -210,6 +246,10 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
             }
         });
 
+        jCBEstado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione", "Activo", "Inactivo" }));
+
+        jCBRol.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione", "Admin", "User" }));
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -230,7 +270,10 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
                                 .addComponent(jLabel3))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGap(14, 14, 14)
-                                .addComponent(jLabel4))))
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jCBEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jCBRol, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGap(22, 22, 22)
                         .addComponent(jTFnombreUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -270,18 +313,22 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTFcontraseña, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(95, 95, 95)
+                        .addGap(61, 61, 61)
+                        .addComponent(jCBEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(56, 56, 56)))
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jBtnGuardar)
-                    .addComponent(jBtnEditar)
-                    .addComponent(jBtnLimpiar)
-                    .addComponent(jBtnEliminar))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jBtnGuardar)
+                        .addComponent(jBtnEditar)
+                        .addComponent(jBtnLimpiar)
+                        .addComponent(jBtnEliminar))
+                    .addComponent(jCBRol, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(146, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel2Layout.createSequentialGroup()
@@ -320,11 +367,7 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jTFidUsuarioActionPerformed
 
     private void jBtnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnGuardarActionPerformed
-        try {
-            guardar();
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Error al almacenar el registro" + ex);
-        }
+        guardarArchivo();
     }//GEN-LAST:event_jBtnGuardarActionPerformed
 
     private void jBtnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnLimpiarActionPerformed
@@ -332,19 +375,11 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jBtnLimpiarActionPerformed
 
     private void jBtnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnEditarActionPerformed
-        try {
-            editar();
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Error al almacenar el registro" + ex);
-        }
+        
     }//GEN-LAST:event_jBtnEditarActionPerformed
 
     private void jBtnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnEliminarActionPerformed
-        try {
-            eliminar();
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Error al almacenar el registro" + ex);
-        }
+       
     }//GEN-LAST:event_jBtnEliminarActionPerformed
 
     private void jTFnombreUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTFnombreUsuarioActionPerformed
@@ -357,6 +392,8 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
     private javax.swing.JButton jBtnEliminar;
     private javax.swing.JButton jBtnGuardar;
     private javax.swing.JButton jBtnLimpiar;
+    private javax.swing.JComboBox<String> jCBEstado;
+    private javax.swing.JComboBox<String> jCBRol;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
