@@ -26,7 +26,7 @@ public class CDCliente {
     }
 
     public void insertarCliente(CLCliente cl) throws SQLException {
-        String sql = "{CALL usp_insertarCliente(?)}";
+        String sql = "{CALL usp_insertarClientes(?)}";
 
         try {
             ps = cn.prepareCall(sql);
@@ -38,11 +38,11 @@ public class CDCliente {
     }
 
     public void actualizarCliente(CLCliente cl) throws SQLException {
-        String sql = "{CALL usp_actualizarCliente(?,?)}";
+        String sql = "{CALL usp_actualizarClientes(?,?)}";
 
         try {
             ps = cn.prepareCall(sql);
-            ps.setInt(1, cl.getIdCliente());
+            ps.setString(1, cl.getIdCliente());
             ps.setString(2, cl.getNombreCliente());
             ps.execute();
         } catch (SQLException e) {
@@ -51,37 +51,17 @@ public class CDCliente {
     }
 
     public void eliminarCliente(CLCliente cl) throws SQLException {
-        String sql = "{CALL usp_eliminarCliente(?)}";
+        String sql = "{CALL usp_eliminarClientes(?)}";
 
         try {
             ps = cn.prepareCall(sql);
-            ps.setInt(1, cl.getIdCliente());
+            ps.setString(1, cl.getIdCliente());
             ps.execute();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error" + e.getMessage());
         }
     }
 
-    public int auntoIncrementarClienteID() throws SQLException {
-        int idCliente = 0;
-
-        String sql = "{CALL usp_autoIncrementarClienteID()}";
-
-        try {
-            st = cn.createStatement();
-            rs = st.executeQuery(sql);
-            rs.next();
-
-            idCliente = rs.getInt("idCliente");
-
-            if (idCliente == 0) {
-                idCliente = 1;
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error" + e.getMessage());
-        }
-        return idCliente;
-    }
     
     private String obtenerNombreCiudad(int idCiudad) throws SQLException {
         String nombre = "";
@@ -112,7 +92,7 @@ public class CDCliente {
     }
 
     public List<CLCliente> obtenerListaCliente() throws SQLException {
-        String sql = "{CALL usp_mostrarCliente()}";
+        String sql = "{CALL usp_mostrarClientes()}";
         List<CLCliente> miLista = new ArrayList<>();
 
         try {
@@ -121,22 +101,16 @@ public class CDCliente {
 
             while (rs.next()) {
                 CLCliente cl = new CLCliente();
-                cl.setIdCliente(rs.getInt("idCliente"));
-                cl.setNombreCliente(rs.getString("nombreCliente"));
+                cl.setIdCliente(rs.getString("idCliente"));
+                cl.setNombreCliente(rs.getString("nombre"));
                 cl.setApellidos(rs.getString("apellidos"));
                 cl.setDireccion(rs.getString("direccion"));
                 cl.setTelefono(rs.getString("telefono"));
                 cl.setEmail(rs.getString("email"));
                 cl.setRtn(rs.getString("RTN"));
-                cl.setIdCiudad(rs.getInt("idCiudad"));
-                cl.setIdSexo(rs.getInt("idSexo"));
-
-                // Obtener nombre de ciudad
-                cl.setNombreCiudad(obtenerNombreCiudad(cl.getIdCiudad()));
-
-                // Obtener descripción de sexo
-                cl.setDescripcionSexo(obtenerDescripcionSexo(cl.getIdSexo()));
-
+                cl.setNombreCiudad(rs.getString("nombreCiudad"));
+                cl.setDescripcionSexo(rs.getString("descSexo"));
+           
                 miLista.add(cl);
             }
         } catch (SQLException e) {
@@ -146,7 +120,7 @@ public class CDCliente {
     }
 
     public List<String> cargarComboCliente() throws SQLException {
-        String sql = "{CALL usp_mostrarCliente()}";
+        String sql = "{CALL usp_mostrarClientes()}";
 
         List<String> miLista = null;
 

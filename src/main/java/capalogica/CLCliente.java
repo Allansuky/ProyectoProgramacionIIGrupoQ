@@ -6,7 +6,7 @@ package capalogica;
 
 public class CLCliente {
 
-    private int idCliente;
+    private String idCliente;
     private String nombreCliente;
     private String apellidos;
     private String direccion;
@@ -18,11 +18,11 @@ public class CLCliente {
     private String nombreCiudad;
     private String descripcionSexo;
 
-    public int getIdCliente() {
+    public String getIdCliente() {
         return idCliente;
     }
 
-    public void setIdCliente(int idCliente) {
+    public void setIdCliente(String idCliente) {
         this.idCliente = idCliente;
     }
 
@@ -89,9 +89,9 @@ public class CLCliente {
     public void setIdSexo(int idSexo) {
         this.idSexo = idSexo;
     }
-    
+
     public String getNombreCiudad() {
-    return nombreCiudad;
+        return nombreCiudad;
     }
 
     public void setNombreCiudad(String nombreCiudad) {
@@ -105,5 +105,7 @@ public class CLCliente {
     public void setDescripcionSexo(String descripcionSexo) {
         this.descripcionSexo = descripcionSexo;
     }
+
+    
 
 }

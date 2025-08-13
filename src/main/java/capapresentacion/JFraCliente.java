@@ -16,7 +16,6 @@ public class JFraCliente extends javax.swing.JInternalFrame {
     public JFraCliente() throws SQLException {
         initComponents();
         poblarTablaClientes();
-        encontrarCorrelativo();
         this.jTFNombreCliente.requestFocus();
     }
 
@@ -49,14 +48,6 @@ public class JFraCliente extends javax.swing.JInternalFrame {
         temp.addRow(fila);
     });
 }
-
-    private void encontrarCorrelativo() throws SQLException {
-        CDCliente cdCliente = new CDCliente();
-        CLCliente cl = new CLCliente();
-
-        cl.setIdCliente(cdCliente.auntoIncrementarClienteID());
-        this.jTFIdCliente.setText(String.valueOf(cl.getIdCliente()));
-    }
 
     private void habilitarBotones(boolean guardar, boolean editar, boolean eliminar, boolean limpiar) {
         this.jBtnGuardar.setEnabled(guardar);
@@ -105,7 +96,7 @@ public class JFraCliente extends javax.swing.JInternalFrame {
         poblarTablaClientes();
         habilitarBotones(true, false, false, true);
         limpiarTextField();
-        encontrarCorrelativo();
+        
     }
 
     private void actualizarCliente() {
@@ -117,7 +108,6 @@ public class JFraCliente extends javax.swing.JInternalFrame {
             try {
                 CDCliente cdCliente = new CDCliente();
                 CLCliente cl = new CLCliente();
-                cl.setIdCliente(Integer.parseInt(this.jTFIdCliente.getText().trim()));
                 cl.setNombreCliente(this.jTFNombreCliente.getText().trim());
                 cdCliente.actualizarCliente(cl);
 
@@ -142,14 +132,14 @@ public class JFraCliente extends javax.swing.JInternalFrame {
         poblarTablaClientes();
         habilitarBotones(true, false, false, true);
         limpiarTextField();
-        encontrarCorrelativo();
+        
     }
 
     private void eliminarCliente() {
         try {
             CDCliente cdCliente = new CDCliente();
             CLCliente cl = new CLCliente();
-            cl.setIdCliente(Integer.parseInt(this.jTFIdCliente.getText().trim()));
+            cl.setIdCliente(this.jTFIdCliente.getText().trim());
             cdCliente.eliminarCliente(cl);
 
             JOptionPane.showMessageDialog(null, "Registro eliminado satisfactoriamente.", "Control Credito",
@@ -169,7 +159,6 @@ public class JFraCliente extends javax.swing.JInternalFrame {
                 poblarTablaClientes();
                 habilitarBotones(true, false, false, true);
                 limpiarTextField();
-                encontrarCorrelativo();
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(null, "Error" + ex);
             }
