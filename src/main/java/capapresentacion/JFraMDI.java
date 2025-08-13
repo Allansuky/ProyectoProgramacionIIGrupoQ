@@ -48,11 +48,11 @@ public class JFraMDI extends javax.swing.JFrame {
         jDPPrincipal.setLayout(jDPPrincipalLayout);
         jDPPrincipalLayout.setHorizontalGroup(
             jDPPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 487, Short.MAX_VALUE)
+            .addGap(0, 513, Short.MAX_VALUE)
         );
         jDPPrincipalLayout.setVerticalGroup(
             jDPPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 374, Short.MAX_VALUE)
+            .addGap(0, 433, Short.MAX_VALUE)
         );
 
         jMenu1.setText("Archivo");
@@ -118,17 +118,11 @@ public class JFraMDI extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jDPPrincipal)
-                .addGap(20, 20, 20))
+            .addComponent(jDPPrincipal)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jDPPrincipal)
-                .addGap(53, 53, 53))
+            .addComponent(jDPPrincipal)
         );
 
         pack();
