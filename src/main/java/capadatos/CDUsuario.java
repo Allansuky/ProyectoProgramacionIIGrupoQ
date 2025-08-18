@@ -91,8 +91,8 @@ public class CDUsuario {
     }
 
     public List<CLUsuario> obtenerListaUsuario() throws SQLException {
-        String sql = "{CALL usp_mostrarUsuarios()}";
-        List<CLUsuario> lista = new ArrayList<>();
+    String sql = "{CALL usp_mostrarUsuarios()}";
+    List<CLUsuario> lista = new ArrayList<>();
 
         try {
             st = cn.createStatement();
@@ -104,13 +104,15 @@ public class CDUsuario {
                 v.setNombreUsuario(rs.getString("nombreUsuario"));
                 v.setContraseña(rs.getString("contraseña")); 
                 v.setEstado(rs.getBoolean("estado"));        
-                v.setRol(rs.getString("rol")); 
+                v.setIdRol(rs.getInt("idRol"));              
+                v.setRol(rs.getString("rol"));               
                 lista.add(v);
-}
+            }
 
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
         }
         return lista;
     }
+
 }

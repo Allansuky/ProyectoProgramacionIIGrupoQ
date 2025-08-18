@@ -120,6 +120,11 @@ public class JFraMDI extends javax.swing.JFrame {
         jMenu4.setText("Usuario");
 
         jMIUsuario.setText("Gestion usuario");
+        jMIUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMIUsuarioActionPerformed(evt);
+            }
+        });
         jMenu4.add(jMIUsuario);
 
         jMenuBar1.add(jMenu4);
@@ -188,6 +193,19 @@ public class JFraMDI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Error al abrir la ventana Cliente: " + ex.getMessage());
         }
     }//GEN-LAST:event_jBtnDetalleFacturaActionPerformed
+
+    private void jMIUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMIUsuarioActionPerformed
+        try {
+            JFraUsuario usuario = new JFraUsuario(); 
+            jDPPrincipal.add(usuario);              
+            usuario.setVisible(true);             
+        } catch (SQLException ex) {
+            System.getLogger(JFraMDI.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            JOptionPane.showMessageDialog(this, "Error al abrir la ventana Usuario: " + ex.getMessage());
+        }
+
+
+    }//GEN-LAST:event_jMIUsuarioActionPerformed
 
     /**
      * @param args the command line arguments

@@ -13,6 +13,7 @@ public class CLUsuario {
     private String nombreUsuario;
     private String contraseña;
     private boolean estado;
+    private int idRol;
     private String rol;
 
     public int getIdUsuario() {
@@ -47,6 +48,14 @@ public class CLUsuario {
         this.estado = estado;
     }
 
+    public int getIdRol() {
+        return idRol;
+    }
+
+    public void setIdRol(int idRol) {
+        this.idRol = idRol;
+    }
+
     public String getRol() {
         return rol;
     }
@@ -56,5 +65,6 @@ public class CLUsuario {
     }
     
     
-
 }
+
+    

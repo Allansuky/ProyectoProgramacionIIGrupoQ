@@ -23,9 +23,11 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
     /**
      * Creates new form JFraUsuario
      */
-    public JFraUsuario() {
+    public JFraUsuario() throws SQLException {
         initComponents();
         dtm = (DefaultTableModel) this.jTblDatosUsuario.getModel();
+        poblarTablaUsuarios();
+        
     }
     
     private void habilitarBotones() {
@@ -50,17 +52,17 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
     }
     
     private void poblarTablaUsuarios() throws SQLException {
-        limpiarTabla(); // método que limpia el modelo de la tabla
-        CDUsuario cdUsuario = new CDUsuario(); // capa de datos
-        List<CLUsuario> lista = cdUsuario.obtenerListaUsuario(); // obtiene la lista
-        DefaultTableModel temp = (DefaultTableModel) this.jTblDatosUsuario.getModel(); // modelo de la tabla
+        limpiarTabla(); 
+        CDUsuario cdUsuario = new CDUsuario(); 
+        List<CLUsuario> lista = cdUsuario.obtenerListaUsuario(); 
+        DefaultTableModel temp = (DefaultTableModel) this.jTblDatosUsuario.getModel(); 
 
         lista.forEach((CLUsuario u) -> {
             Object[] fila = new Object[5];
             fila[0] = u.getIdUsuario();
             fila[1] = u.getNombreUsuario();
-            fila[2] = u.getContraseña(); // o getContraseña() si mantienes la tilde
-            fila[3] = u.isEstado() ? "Activo" : "Inactivo"; // muestra estado como texto
+            fila[2] = u.getContraseña(); 
+            fila[3] = u.isEstado() ? "Activo" : "Inactivo"; 
             fila[4] = u.getRol();
             temp.addRow(fila);
         });
@@ -107,7 +109,7 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
             CDUsuario cdUsuario = new CDUsuario(); 
             CLUsuario u = new CLUsuario();         
             u.setIdUsuario(Integer.parseInt(jTFidUsuario.getText().trim())); 
-            cdUsuario.eliminarUsuario(u);          // método que ejecuta el DELETE
+            cdUsuario.eliminarUsuario(u);          
             JOptionPane.showMessageDialog(null, "Usuario eliminado correctamente.", "Usuarios", JOptionPane.INFORMATION_MESSAGE);
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Error al eliminar: " + ex.getMessage());
@@ -120,8 +122,8 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
         int resp = JOptionPane.showConfirmDialog(null, "¿Desea eliminar el usuario?", "Usuarios", JOptionPane.YES_NO_OPTION);
         if (resp == JOptionPane.YES_OPTION) {
             eliminarUsuario();
-            poblarTablaUsuarios(); // método que actualiza la tabla
-            encontrarCorrelativo(); // si usas correlativos para nuevos IDs
+            poblarTablaUsuarios(); 
+            encontrarCorrelativo(); 
         }
     }
 
@@ -159,6 +161,7 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
         jTFnombreUsuario = new javax.swing.JTextField();
         jCBEstado = new javax.swing.JComboBox<>();
         jCBRol = new javax.swing.JComboBox<>();
+        jBtnMostrar = new javax.swing.JButton();
 
         setClosable(true);
 
@@ -250,6 +253,13 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
 
         jCBRol.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione", "Admin", "User" }));
 
+        jBtnMostrar.setText("Mostrar");
+        jBtnMostrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnMostrarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -281,7 +291,9 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 701, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(0, 418, Short.MAX_VALUE)
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jBtnMostrar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jBtnGuardar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jBtnEditar)
@@ -327,7 +339,8 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
                         .addComponent(jBtnGuardar)
                         .addComponent(jBtnEditar)
                         .addComponent(jBtnLimpiar)
-                        .addComponent(jBtnEliminar))
+                        .addComponent(jBtnEliminar)
+                        .addComponent(jBtnMostrar))
                     .addComponent(jCBRol, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(146, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -386,12 +399,21 @@ public class JFraUsuario extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTFnombreUsuarioActionPerformed
 
+    private void jBtnMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnMostrarActionPerformed
+        try {
+            poblarTablaUsuarios();
+        } catch (SQLException ex) {
+            System.getLogger(JFraUsuario.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+    }//GEN-LAST:event_jBtnMostrarActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jBtnEditar;
     private javax.swing.JButton jBtnEliminar;
     private javax.swing.JButton jBtnGuardar;
     private javax.swing.JButton jBtnLimpiar;
+    private javax.swing.JButton jBtnMostrar;
     private javax.swing.JComboBox<String> jCBEstado;
     private javax.swing.JComboBox<String> jCBRol;
     private javax.swing.JLabel jLabel1;

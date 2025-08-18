@@ -1,11 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JInternalFrame.java to edit this template
- */
 package capapresentacion;
 
 import capadatos.CDDetalleFactura;
+import capadatos.CDFactura_Vehiculo;
 import capalogica.CLDetalleFactura;
+import capalogica.CLFactura_Vehiculo;
+import capalogica.Calculos;
 import java.sql.SQLException;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -20,28 +19,27 @@ public class JFraDetalleFactura extends javax.swing.JInternalFrame {
         this.jTFFecha.requestFocus();
     }
 
-    // habilita o deshabilita botones según la operación
+    // ------------------------- Tus métodos originales -------------------------
+
     private void habilitarBotones(boolean guardar, boolean editar, boolean eliminar, boolean limpiar) {
         this.jBtnGuardar.setEnabled(guardar);
         this.jBtnEditar.setEnabled(editar);
         this.jBtnEliminar.setEnabled(eliminar);
         this.jBtnLimpiar.setEnabled(limpiar);
-        this.jBtnActualizarFecha.setEnabled(!guardar); // solo activa al editar
+        this.jBtnActualizarFecha.setEnabled(!guardar);
     }
 
-    // limpia los campos de texto
     private void limpiarCampos() {
         jTFidDetalle.setText("");
         jTFCantidad.setText("");
         jTFPrecioUnitario.setText("");
         jTFidFactura.setText("");
-        jTFFecha.setText("");
+        jTFCodVehiculo.setText("");
         jTFFecha.setText("");
         jTFFecha.requestFocus();
         habilitarBotones(true, false, false, true);
     }
 
-    // Tabla 1: Detalles completos
     private void limpiarTabla() {
         DefaultTableModel dtm = (DefaultTableModel) jTblTablaFactura.getModel();
         while (dtm.getRowCount() > 0) {
@@ -65,9 +63,16 @@ public class JFraDetalleFactura extends javax.swing.JInternalFrame {
             fila[5] = df.getFecha();
             model.addRow(fila);
         }
+
+        // ------------------- NUEVO: agregar totales -------------------
+        CLFactura_Vehiculo factura = new CLFactura_Vehiculo();
+        Calculos.aplicarCalculos(factura, lista);
+        model.addRow(new Object[]{"Subtotal", "-", factura.getSubtotal(), "-", "-", "-"});
+        model.addRow(new Object[]{"Impuesto (15%)", "-", factura.getImpuesto(), "-", "-", "-"});
+        model.addRow(new Object[]{"Total", "-", factura.getTotalPago(), "-", "-", "-"});
+        // ---------------------------------------------------------------
     }
 
-    // Tabla 2: Solo fecha editable
     private void limpiarTablaFechas() {
         DefaultTableModel dtm = (DefaultTableModel) jTblFechas.getModel();
         while (dtm.getRowCount() > 0) {
@@ -89,7 +94,6 @@ public class JFraDetalleFactura extends javax.swing.JInternalFrame {
         }
     }
 
-    // Valida que todos los campos requeridos estén completos
     private boolean validarCamposDetalle() {
         return !jTFCantidad.getText().trim().isEmpty()
             && !jTFPrecioUnitario.getText().trim().isEmpty()
@@ -98,7 +102,6 @@ public class JFraDetalleFactura extends javax.swing.JInternalFrame {
             && !jTFFecha.getText().trim().isEmpty();
     }
 
-    // Inserta un nuevo detalle incluyendo la fecha
     private void insertarDetalleFactura() {
         if (!validarCamposDetalle()) {
             JOptionPane.showMessageDialog(null, "Complete todos los campos", "Detalle Factura", JOptionPane.WARNING_MESSAGE);
@@ -110,7 +113,7 @@ public class JFraDetalleFactura extends javax.swing.JInternalFrame {
             df.setCantidad(Integer.parseInt(jTFCantidad.getText().trim()));
             df.setPrecioUnitario(Double.parseDouble(jTFPrecioUnitario.getText().trim()));
             df.setIdFactura(Integer.parseInt(jTFidFactura.getText().trim()));
-            df.setCodVehiculo(jTFFecha.getText().trim());
+            df.setCodVehiculo(jTFCodVehiculo.getText().trim());
             df.setFecha(jTFFecha.getText().trim());
             cd.insertarDetalle(df);
             JOptionPane.showMessageDialog(null, "Detalle guardado correctamente.", "Detalle Factura", JOptionPane.INFORMATION_MESSAGE);
@@ -121,12 +124,11 @@ public class JFraDetalleFactura extends javax.swing.JInternalFrame {
 
     private void guardar() throws SQLException {
         insertarDetalleFactura();
-        poblarTablaDetalleFactura();
+        poblarTablaDetalleFactura(); // <-- aquí se agrega totales automáticamente
         poblarTablaFechas();
         limpiarCampos();
     }
 
-    // Actualiza todos los campos de un detalle
     private void actualizarDetalleFactura() {
         if (!validarCamposDetalle()) {
             JOptionPane.showMessageDialog(null, "Complete todos los campos", "Detalle Factura", JOptionPane.WARNING_MESSAGE);
@@ -139,7 +141,7 @@ public class JFraDetalleFactura extends javax.swing.JInternalFrame {
             df.setCantidad(Integer.parseInt(jTFCantidad.getText().trim()));
             df.setPrecioUnitario(Double.parseDouble(jTFPrecioUnitario.getText().trim()));
             df.setIdFactura(Integer.parseInt(jTFidFactura.getText().trim()));
-            df.setCodVehiculo(jTFFecha.getText().trim());
+            df.setCodVehiculo(jTFCodVehiculo.getText().trim());
             df.setFecha(jTFFecha.getText().trim());
             cd.actualizarDetalle(df);
             JOptionPane.showMessageDialog(null, "Detalle actualizado correctamente.", "Detalle Factura", JOptionPane.INFORMATION_MESSAGE);
@@ -150,12 +152,11 @@ public class JFraDetalleFactura extends javax.swing.JInternalFrame {
 
     private void editar() throws SQLException {
         actualizarDetalleFactura();
-        poblarTablaDetalleFactura();
+        poblarTablaDetalleFactura(); // <-- aquí se agrega totales automáticamente
         poblarTablaFechas();
         limpiarCampos();
     }
 
-    // Elimina un detalle completo
     private void eliminarDetalleFactura() {
         try {
             CDDetalleFactura cd = new CDDetalleFactura();
@@ -172,13 +173,12 @@ public class JFraDetalleFactura extends javax.swing.JInternalFrame {
         int resp = JOptionPane.showConfirmDialog(null, "¿Desea eliminar el detalle?", "Detalle Factura", JOptionPane.YES_NO_OPTION);
         if (resp == JOptionPane.YES_OPTION) {
             eliminarDetalleFactura();
-            poblarTablaDetalleFactura();
+            poblarTablaDetalleFactura(); // <-- aquí se agrega totales automáticamente
             poblarTablaFechas();
             limpiarCampos();
         }
     }
 
-    // Cuando el usuario selecciona una fila en la primera tabla
     private void filaSeleccionada() {
         int row = this.jTblTablaFactura.getSelectedRow();
         if (row != -1) {
@@ -186,13 +186,12 @@ public class JFraDetalleFactura extends javax.swing.JInternalFrame {
             jTFCantidad.setText(String.valueOf(this.jTblTablaFactura.getValueAt(row, 1)));
             jTFPrecioUnitario.setText(String.valueOf(this.jTblTablaFactura.getValueAt(row, 2)));
             jTFidFactura.setText(String.valueOf(this.jTblTablaFactura.getValueAt(row, 3)));
-            jTFFecha.setText(String.valueOf(this.jTblTablaFactura.getValueAt(row, 4)));
+            jTFCodVehiculo.setText(String.valueOf(this.jTblTablaFactura.getValueAt(row, 4)));
             jTFFecha.setText(String.valueOf(this.jTblTablaFactura.getValueAt(row, 5)));
             habilitarBotones(false, true, true, true);
         }
     }
 
-    // Cuando el usuario selecciona una fila en la segunda tabla (solo fecha)
     private void filaFechaSeleccionada() {
         int row = this.jTblFechas.getSelectedRow();
         if (row != -1) {
@@ -203,7 +202,6 @@ public class JFraDetalleFactura extends javax.swing.JInternalFrame {
         }
     }
 
-    // Solo actualiza la fecha de un detalle
     private void actualizarSoloFecha() {
         if (jTFidDetalle.getText().trim().isEmpty() || jTFFecha.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Complete ID Detalle y Fecha", "Actualizar Fecha", JOptionPane.WARNING_MESSAGE);
@@ -222,7 +220,7 @@ public class JFraDetalleFactura extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, "Error al actualizar fecha: " + ex.getMessage());
         }
     }
-    
+
     private void limpiarTextField() {
         jTFidDetalle.setText("");
         jTFCantidad.setText("");
