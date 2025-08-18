@@ -19,7 +19,7 @@ public class JFraDetalleFactura extends javax.swing.JInternalFrame {
         this.jTFFecha.requestFocus();
     }
 
-    // ------------------------- Tus métodos originales -------------------------
+    
 
     private void habilitarBotones(boolean guardar, boolean editar, boolean eliminar, boolean limpiar) {
         this.jBtnGuardar.setEnabled(guardar);
@@ -64,13 +64,13 @@ public class JFraDetalleFactura extends javax.swing.JInternalFrame {
             model.addRow(fila);
         }
 
-        // ------------------- NUEVO: agregar totales -------------------
+       
         CLFactura_Vehiculo factura = new CLFactura_Vehiculo();
         Calculos.aplicarCalculos(factura, lista);
         model.addRow(new Object[]{"Subtotal", "-", factura.getSubtotal(), "-", "-", "-"});
         model.addRow(new Object[]{"Impuesto (15%)", "-", factura.getImpuesto(), "-", "-", "-"});
         model.addRow(new Object[]{"Total", "-", factura.getTotalPago(), "-", "-", "-"});
-        // ---------------------------------------------------------------
+        
     }
 
     private void limpiarTablaFechas() {

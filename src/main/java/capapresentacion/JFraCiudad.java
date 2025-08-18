@@ -10,7 +10,6 @@ import capalogica.CLCiudad;
 import java.sql.SQLException;
 import java.util.List;
 import javax.swing.JOptionPane;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
 
 public class JFraCiudad extends javax.swing.JInternalFrame {
@@ -66,7 +65,6 @@ public class JFraCiudad extends javax.swing.JInternalFrame {
     
     // Metodo para limpiar.
     private boolean limpiarTextField() {
-        this.jTFIdCiudad.setText("");
         this.jTFNombreCiudad.setText("");
         this.jTFNombreCiudad.requestFocus();
         return false;
@@ -155,19 +153,24 @@ public class JFraCiudad extends javax.swing.JInternalFrame {
     
     // Metodo para eliminar.
     private void eliminarCiudad() {
-        try {
-            CDCiudad cdc = new CDCiudad();
-            CLCiudad cl = new CLCiudad();
-            cl.setIdCiudad(Integer.parseInt(this.jTFIdCiudad.getText().trim()));
-            cdc.eliminarCiudad(cl);
+            try {
+                CDCiudad cdc = new CDCiudad();
+                CLCiudad cl = new CLCiudad();
 
-            JOptionPane.showMessageDialog(null, "Registro eliminado satisfactoriamente.", "Control Credito",
-                    JOptionPane.INFORMATION_MESSAGE);
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Error al eliminar el registro" + ex);
-            this.jTFNombreCiudad.requestFocus();
-        }
+                cl.setIdCiudad(Integer.parseInt(this.jTFIdCiudad.getText().trim()));
+                cl.setNombreCiudad(this.jTFNombreCiudad.getText().trim()); 
+
+                cdc.eliminarCiudad(cl);
+
+                JOptionPane.showMessageDialog(null, "Registro eliminado satisfactoriamente.", "Control Credito",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null, "Error al eliminar el registro: " + ex.getMessage());
+                this.jTFNombreCiudad.requestFocus();
     }
+}
+
+    
     
     private void eliminar() throws SQLException {
         int resp = JOptionPane.showConfirmDialog(null, "Esta seguro que desea Eliminar el registro", "Control Credito",
@@ -186,9 +189,7 @@ public class JFraCiudad extends javax.swing.JInternalFrame {
             limpiarTextField();
         }
     }
-    
-    
-    
+     
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -224,6 +225,15 @@ public class JFraCiudad extends javax.swing.JInternalFrame {
                 "Id Ciudad", "Nombre Ciudad"
             }
         ));
+        jTblCiudades.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+                jTblCiudadesAncestorRemoved(evt);
+            }
+        });
         jTblCiudades.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTblCiudadesMouseClicked(evt);
@@ -231,6 +241,13 @@ public class JFraCiudad extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(jTblCiudades);
 
+        jTFNombreCiudad.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTFNombreCiudadActionPerformed(evt);
+            }
+        });
+
+        jTFIdCiudad.setEditable(false);
         jTFIdCiudad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTFIdCiudadActionPerformed(evt);
@@ -381,12 +398,20 @@ public class JFraCiudad extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jTblCiudadesMouseClicked
 
     private void jBtnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnEliminarActionPerformed
-        try {
+     try {
             eliminar();
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Error al almacenar el registro" + ex);
+            JOptionPane.showMessageDialog(null, "Error al intentar eliminar: " + ex.getMessage());
         }
     }//GEN-LAST:event_jBtnEliminarActionPerformed
+
+    private void jTblCiudadesAncestorRemoved(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jTblCiudadesAncestorRemoved
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTblCiudadesAncestorRemoved
+
+    private void jTFNombreCiudadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTFNombreCiudadActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTFNombreCiudadActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

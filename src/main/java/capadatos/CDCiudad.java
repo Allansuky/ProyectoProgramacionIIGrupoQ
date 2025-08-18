@@ -58,7 +58,7 @@ public class CDCiudad {
     
     // Metodo para eliminar ciudad de la tabla.
     public void eliminarCiudad(CLCiudad cl) throws SQLException {
-        String sql = "{CALL usp_eliminarCiudad(?,?)}";
+        String sql = "{CALL usp_eliminarCiudad(?)}";
         
         try {
             ps = cn.prepareCall(sql);
